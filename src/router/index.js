@@ -1,14 +1,14 @@
 import LoginPage from '@/views/login/LoginPage.vue'
-import MainPage from '@/views/MainPage.vue'
-import SignUpPage from '@/views/login/SignUpPage.vue'
-import { createRouter, createWebHistory } from 'vue-router'
 import OAuthRedirectPage from '@/views/login/OAuthRedirectPage.vue'
+import SignUpPage from '@/views/login/SignUpPage.vue'
+import MainPage from '@/views/MainPage.vue'
+import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
   { path: '/login', component: LoginPage },
   { path: '/signup', component: SignUpPage },
-  { path: '/main', component: MainPage, meta: { requiresAuth: true } },
-  { path: '/oauth2/redirect', component: OAuthRedirectPage }, // 리다이렉트 처리
+  { path: '/', component: MainPage, meta: { requiresAuth: true } },
+  { path: '/oauth2/redirect', component: OAuthRedirectPage },
 ]
 
 const router = createRouter({
