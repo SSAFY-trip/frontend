@@ -1,12 +1,11 @@
 import LoginPage from '@/views/login/LoginPage.vue'
 import OAuthRedirectPage from '@/views/login/OAuthRedirectPage.vue'
-import SignUpPage from '@/views/login/SignUpPage.vue'
+import temp from '@/views/login/temp.vue'
 import MainPage from '@/views/MainPage.vue'
 import { createRouter, createWebHistory } from 'vue-router'
-
 const routes = [
   { path: '/login', component: LoginPage },
-  { path: '/signup', component: SignUpPage },
+  { path: '/signup', component: temp },
   { path: '/', component: MainPage, meta: { requiresAuth: true } },
   { path: '/oauth2/redirect', component: OAuthRedirectPage },
 ]

@@ -1,7 +1,9 @@
 <template>
   <div class="backgroundWrapper">
     <div class="background-top"><LeftNavigationBar theme="dark" /></div>
-    <div class="temp"><a href="/" class="logo">Trippy</a></div>
+    <div class="temp">
+      <router-link to="/" class="logo">Trippy</router-link>
+    </div>
     <div class="temp">
       <RightNavigationBar mode="dark" />
     </div>
@@ -54,10 +56,12 @@ export default {
   background-color: black;
   color: white;
 }
+
 .arrow-icon {
-  width: 24px; /* 이미지 너비 */
-  height: 24px; /* 이미지 높이 */
+  width: 24px;
+  height: 24px;
 }
+
 .logo {
   font-size: 32px;
   font-weight: bold;

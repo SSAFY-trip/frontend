@@ -18,31 +18,31 @@
 </template>
 
 <script>
-import SocialLogin from "@/components/SocialLogin.vue";
+import SocialLogin from '@/components/login/SocialLogin.vue'
 
 export default {
   components: { SocialLogin },
   data() {
     return {
-      username: "",
-      password: "",
-    };
+      username: '',
+      password: '',
+    }
   },
   methods: {
     async handleLogin() {
       try {
-        const response = await this.$http.post("/login", {
+        const response = await this.$http.post('/login', {
           username: this.username,
           password: this.password,
-        });
-        const accessToken = response.headers["authorization"];
-        const refreshToken = response.headers["set-cookie"];
-        this.$store.commit("auth/setTokens", { accessToken, refreshToken });
-        this.$router.push("/main");
+        })
+        const accessToken = response.headers['authorization']
+        const refreshToken = response.headers['set-cookie']
+        this.$store.commit('auth/setTokens', { accessToken, refreshToken })
+        this.$router.push('/main')
       } catch (error) {
-        alert("로그인 실패: " + error.response.data.message);
+        alert('로그인 실패: ' + error.response.data.message)
       }
     },
   },
-};
+}
 </script>

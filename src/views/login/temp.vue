@@ -2,11 +2,11 @@
   <div class="login-container">
     <div class="background-container">
       <BackgroundTop />
-      <BackgroundBottom />
+      <SignUp />
     </div>
     <main class="login-main">
       <div class="login-content">
-        <form @submit.prevent="handleLogin" class="login-form">
+        <form @submit.prevent="handleSignUp" class="login-form">
           <div class="form-group">
             <label for="username">아이디</label>
             <input
@@ -29,16 +29,27 @@
               required
             />
           </div>
+          <div class="form-group">
+            <label for="nickname">닉네임</label>
+            <input
+              type="nickname"
+              id="nickname"
+              v-model="nickname"
+              class="form-input"
+              placeholder="사용하실 닉네임을 입력해주세요"
+              required
+            />
+          </div>
           <button type="submit" class="login-button">
-            로그인하기<img src="/public/navigation/arrow.svg" alt="arrow icon" class="arrow-icon" />
+            회원가입하기<img
+              src="/public/navigation/arrow.svg"
+              alt="arrow icon"
+              class="arrow-icon"
+            />
           </button>
         </form>
-        <p class="signup-link">
-          계정이 없으신가요?
-          <router-link to="/signup" class="signup-link-btn">회원가입하러 가기</router-link>
-        </p>
         <div class="social-login">
-          <p>SNS 계정으로 로그인하기</p>
+          <p>SNS 계정으로 회원가입하기</p>
           <div class="social-buttons">
             <button class="social-button facebook" @click="handleSocialLogin('naver')">N</button>
             <button class="social-button google" @click="handleSocialLogin('google')">G</button>
@@ -46,9 +57,9 @@
         </div>
       </div>
       <div class="signup-section">
-        <p class="signup-text">계정이 없으신가요?</p>
-        <button class="signup-button" @click="navigateToSignup">
-          회원가입 하러 가기
+        <p class="signup-text">계정이 있으신가요?</p>
+        <button class="signup-button" @click="navigateToLogin">
+          로그인하러 가기
           <img src="/public/navigation/arrow.svg" alt="arrow icon" class="signup-arrow-icon" />
         </button>
       </div>
@@ -58,43 +69,43 @@
 
 <script>
 import BackgroundTop from '@/components/common/background1/backgroundTop.vue'
-import BackgroundBottom from '@/components/common/background1/backgroundBottom.vue'
+import SignUp from '@/components/login/Signup.vue'
 export default {
   name: 'LoginPage',
   components: {
     BackgroundTop,
-    BackgroundBottom,
+    SignUp,
   },
 
   data() {
     return {
       username: '',
       password: '',
+      role: 'ROLE_USER',
+      nickname: '',
     }
   },
 
   methods: {
-    navigateToSignup() {
-      this.$router.push('/signup')
+    navigateToLogin() {
+      this.$router.push('/login')
     },
-    async handleLogin() {
+    async handleSignUp() {
       try {
-        const response = await this.$http.post('/login', {
+        await this.$http.post('/join', {
           username: this.username,
           password: this.password,
+          role: this.role,
+          name: this.nickname,
         })
-
-        const accessToken = response.headers['access']
-        if (!accessToken) {
-          throw new Error('Access token not found in response headers')
-        }
-        localStorage.setItem('accessToken', accessToken)
-
-        this.$router.push('/main')
+        alert('회원가입 성공! 로그인 해주세요.')
+        this.$router.push('/login')
       } catch (error) {
-        alert('로그인 실패: 아이디와 비밀번호를 확인해 주세요.')
+        alert('회원가입 실패: ' + error.response?.data?.message || '서버 오류')
+        console.log('error', error)
       }
     },
+
     handleSocialLogin(provider) {
       const redirectUrl = {
         naver: 'http://localhost:8080/oauth2/authorization/naver',
@@ -107,14 +118,6 @@ export default {
 </script>
 
 <style scoped>
-.background-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  position: relative;
-}
 .login-container {
   max-width: 100%;
   min-height: 100vh;
@@ -209,22 +212,6 @@ export default {
 .login-button:hover {
   background-color: #007bff;
   color: white;
-}
-
-.signup-link {
-  margin-top: 20px;
-  font-size: 14px;
-  color: #555;
-}
-
-.signup-link-btn {
-  color: #007bff;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-.signup-link-btn:hover {
-  text-decoration: underline;
 }
 
 .social-login {
