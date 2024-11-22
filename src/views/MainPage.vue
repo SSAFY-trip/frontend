@@ -2,6 +2,7 @@
   <div>
     <h1>메인 페이지</h1>
     <p>환영합니다, {{ username }}님!</p>
+    <a href="/login" class="nav-link">로그인</a>
     <button @click="logout">로그아웃</button>
   </div>
 </template>
