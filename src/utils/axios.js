@@ -6,6 +6,16 @@ const axiosInstance = axios.create({
   withCredentials: true, // 쿠키 전송 활성화
 })
 
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const accessToken = localStorage.getItem('accessToken') // 로컬 스토리지에서 토큰 가져오기
+    if (accessToken) {
+      config.headers['access'] = `${accessToken}` // Authorization 헤더 추가
+    }
+    return config
+  },
+  (error) => Promise.reject(error),
+)
 // Axios Interceptor 설정
 axiosInstance.interceptors.response.use(
   (response) => {

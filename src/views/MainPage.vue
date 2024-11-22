@@ -1,58 +1,64 @@
 <template>
   <div>
     <h1>메인 페이지</h1>
-    <p>환영합니다, {{ username }}님!</p>
-    <a href="/login" class="nav-link">로그인</a>
-    <button @click="logout">로그아웃</button>
+    <h2>여행 좋아요 관리</h2>
+    <ul>
+      <li v-for="trip in trips" :key="trip.id">
+        {{ trip.name }}
+        <button @click="removeTrip(trip.id)">좋아요 취소</button>
+      </li>
+    </ul>
+    <div>
+      <h3>좋아요 추가하기</h3>
+      <input v-model="newTripId" placeholder="추가할 여행 ID" />
+      <button @click="addTrip">좋아요 추가</button>
+    </div>
+    <button @click="fetchLikedTrips">좋아요한 여행 목록 새로고침</button>
   </div>
 </template>
 
 <script>
+import axiosInstance from '@/utils/axios'
+
 export default {
+  name: 'MainPage',
   data() {
     return {
-      username: '',
+      trips: [], // 좋아요한 여행 목록
+      newTripId: '', // 추가할 여행 ID
     }
   },
   async created() {
-    try {
-      // 유저 정보 요청 (예: /user/me)
-      const response = await this.$http.get('/user/me', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        },
-      })
-      this.username = response.data.username
-    } catch (error) {
-      alert('인증이 만료되었습니다. 다시 로그인해주세요.')
-      this.$router.push('/login')
-    }
+    await this.fetchLikedTrips() // 페이지 로드 시 좋아요 목록 가져오기
   },
   methods: {
-    async logout() {
+    async fetchLikedTrips() {
       try {
-        // 백엔드 로그아웃 요청
-        await this.$http.post(
-          '/logout',
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-            },
-            withCredentials: true, // 쿠키 포함
-          },
-        )
-
-        // 로그아웃 성공 시 로컬 스토리지와 쿠키 정리
-        localStorage.removeItem('accessToken')
-        document.cookie = 'refresh=; Max-Age=0; Path=/;'
-
-        // 로그인 페이지로 이동
-        this.$router.push('/login')
-        alert('로그아웃 되었습니다.')
+        const response = await axiosInstance.get('/user-like-trip/user')
+        this.trips = response.data
       } catch (error) {
-        console.error('로그아웃 실패:', error)
-        alert('로그아웃 중 문제가 발생했습니다. 다시 시도해주세요.')
+        console.error('좋아요한 여행 조회 중 오류 발생:', error)
+      }
+    },
+    async addTrip() {
+      if (!this.newTripId) {
+        alert('추가할 여행 ID를 입력하세요.')
+        return
+      }
+      try {
+        await axiosInstance.post(`/user-like-trip/${this.newTripId}`)
+        await this.fetchLikedTrips()
+        this.newTripId = ''
+      } catch (error) {
+        console.error('좋아요 추가 중 오류 발생:', error)
+      }
+    },
+    async removeTrip(tripId) {
+      try {
+        await axiosInstance.post(`/user-like-trip/${tripId}`)
+        await this.fetchLikedTrips()
+      } catch (error) {
+        console.error('좋아요 취소 중 오류 발생:', error)
       }
     },
   },
