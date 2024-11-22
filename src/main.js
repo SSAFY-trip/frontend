@@ -14,3 +14,4 @@ app.use(router)
 app.config.globalProperties.$http = axiosInstance
 
 app.mount('#app')
+
