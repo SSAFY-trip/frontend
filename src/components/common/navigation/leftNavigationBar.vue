@@ -35,7 +35,6 @@ export default {
   border-radius: 24px;
   border: 2px solid black;
   width: 56%;
-  height: 30px;
   margin-left: 25px;
   transition:
     background-color 0.3s,
