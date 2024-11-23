@@ -102,7 +102,6 @@ export default {
         this.$router.push('/login')
       } catch (error) {
         alert('회원가입 실패: ' + error.response?.data?.message || '서버 오류')
-        console.log('error', error)
       }
     },
 

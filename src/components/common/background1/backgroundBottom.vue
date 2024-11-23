@@ -10,7 +10,6 @@
 export default {
   name: 'BackgroundBottom',
 }
-console.log('bottom')
 </script>
 
 <style scoped>

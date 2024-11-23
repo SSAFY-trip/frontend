@@ -1,66 +1,109 @@
 <template>
   <div>
     <h1>메인 페이지</h1>
-    <h2>여행 좋아요 관리</h2>
-    <ul>
-      <li v-for="trip in trips" :key="trip.id">
-        {{ trip.name }}
-        <button @click="removeTrip(trip.id)">좋아요 취소</button>
-      </li>
-    </ul>
+    <p>환영합니다, {{ username }}님!</p>
+    <a href="/login" class="nav-link">로그인</a>
+    <button @click="logout">로그아웃</button>
+
+    <h1>User Like Trip</h1>
+
     <div>
-      <h3>좋아요 추가하기</h3>
-      <input v-model="newTripId" placeholder="추가할 여행 ID" />
-      <button @click="addTrip">좋아요 추가</button>
+      <h2>여행 좋아요 업데이트</h2>
+      <input v-model="tripId" type="number" placeholder="Trip ID" />
+      <button @click="updateLikeTrip">좋아요 추가/삭제</button>
     </div>
-    <button @click="fetchLikedTrips">좋아요한 여행 목록 새로고침</button>
+
+    <div>
+      <h2>사용자가 좋아요한 여행 목록</h2>
+      <button @click="getLikedTrips">조회</button>
+      <ul>
+        <li v-for="trip in likedTrips" :key="trip.id">{{ trip.name }}</li>
+      </ul>
+    </div>
+
+    <div>
+      <h2>특정 여행을 좋아요한 사용자 목록</h2>
+      <input v-model="selectedTripId" type="number" placeholder="Trip ID" />
+      <button @click="getUsersWhoLikedTrip">조회</button>
+      <ul>
+        <li v-for="user in usersWhoLikedTrip" :key="user.id">{{ user.name }}</li>
+      </ul>
+    </div>
   </div>
 </template>
-
 <script>
-import axiosInstance from '@/utils/axios'
+import { updateLikeTrip, getLikedTrips, getUsersWhoLikedTrip } from '@/utils/userLikeTripAPI'
 
 export default {
   name: 'MainPage',
   data() {
     return {
-      trips: [], // 좋아요한 여행 목록
-      newTripId: '', // 추가할 여행 ID
+      username: '사용자',
+      tripId: null,
+      likedTrips: [],
+      selectedTripId: null,
+      usersWhoLikedTrip: [],
     }
   },
   async created() {
-    await this.fetchLikedTrips() // 페이지 로드 시 좋아요 목록 가져오기
+    await this.fetchLikedTrips()
   },
   methods: {
-    async fetchLikedTrips() {
-      try {
-        const response = await axiosInstance.get('/user-like-trip/user')
-        this.trips = response.data
-      } catch (error) {
-        console.error('좋아요한 여행 조회 중 오류 발생:', error)
-      }
-    },
-    async addTrip() {
-      if (!this.newTripId) {
-        alert('추가할 여행 ID를 입력하세요.')
+    async updateLikeTrip() {
+      if (!this.tripId) {
+        alert('Trip ID를 입력해주세요.')
         return
       }
       try {
-        await axiosInstance.post(`/user-like-trip/${this.newTripId}`)
-        await this.fetchLikedTrips()
-        this.newTripId = ''
+        await updateLikeTrip(this.tripId)
+        alert('좋아요 업데이트 완료!')
       } catch (error) {
-        console.error('좋아요 추가 중 오류 발생:', error)
+        console.error('좋아요 업데이트 오류:', error)
+        alert('좋아요 업데이트에 실패했습니다.')
       }
     },
-    async removeTrip(tripId) {
+    async getLikedTrips() {
       try {
-        await axiosInstance.post(`/user-like-trip/${tripId}`)
-        await this.fetchLikedTrips()
+        const response = await getLikedTrips()
+        this.likedTrips = response.data
       } catch (error) {
-        console.error('좋아요 취소 중 오류 발생:', error)
+        alert('목록 조회에 실패했습니다.')
+      }
+    },
+    async getUsersWhoLikedTrip() {
+      if (!this.selectedTripId) {
+        alert('Trip ID를 입력해주세요.')
+        return
+      }
+      try {
+        const response = await getUsersWhoLikedTrip(this.selectedTripId)
+        this.usersWhoLikedTrip = response.data
+      } catch (error) {
+        alert('목록 조회에 실패했습니다.')
       }
     },
   },
 }
 </script>
+
+<style scoped>
+h1 {
+  margin-bottom: 20px;
+}
+h2 {
+  margin: 20px 0 10px;
+}
+input {
+  margin-right: 10px;
+}
+button {
+  margin-bottom: 20px;
+}
+ul {
+  list-style: none;
+  padding: 0;
+}
+li {
+  margin: 5px 0;
+}
+</style>

@@ -1,34 +1,16 @@
-import axiosInstance from './axios'
+import axiosInstance from '@/utils/axios'
 
-// 1. 사용자 좋아하는 여행 정보 가져오기
-export const getUserTrips = async () => {
-  try {
-    const response = await axiosInstance.get('/user/trips')
-    return response.data
-  } catch (error) {
-    console.log(error)
-    throw error
-  }
+// 여행 좋아요 추가/삭제
+export const updateLikeTrip = async (tripId) => {
+  return await axiosInstance.post(`/user-like-trip/${tripId}`)
 }
 
-// 2. 특정 여행 추가
-export const addUserTrip = async (tripId) => {
-  try {
-    const response = await axiosInstance.post(`/user/trips/${tripId}`)
-    return response.data
-  } catch (error) {
-    console.log(error)
-    throw error
-  }
+// 사용자가 좋아요한 여행 목록 조회
+export const getLikedTrips = async () => {
+  return await axiosInstance.get('/user-like-trip/user')
 }
 
-// 3. 특정 여행 삭제
-export const deleteUserTrip = async (tripId) => {
-  try {
-    const response = await axiosInstance.delete(`/user/trips/${tripId}`)
-    return response.data
-  } catch (error) {
-    console.log(error)
-    throw error
-  }
+// 특정 여행을 좋아요한 사용자 목록 조회
+export const getUsersWhoLikedTrip = async (tripId) => {
+  return await axiosInstance.get(`/user-like-trip/trip/${tripId}`)
 }
