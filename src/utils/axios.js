@@ -38,6 +38,7 @@ axiosInstance.interceptors.response.use(
     // Access Token 갱신 시 응답 헤더에서 저장
     const accessToken = response.headers['access']
     if (accessToken) {
+      console.log("Access token: " + accessToken)
       localStorage.setItem('accessToken', accessToken)
     }
     return response
@@ -68,6 +69,7 @@ axiosInstance.interceptors.response.use(
         alert('세션이 만료되었습니다. 다시 로그인해주세요.')
         localStorage.removeItem('accessToken')
         router.push('/login')
+        console.log(reissueError)
       }
     }
 

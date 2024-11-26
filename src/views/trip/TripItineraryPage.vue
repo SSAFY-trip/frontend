@@ -1,21 +1,26 @@
 <template>
-     <div>
-          <h1>TripItineraryPage</h1>
+     <div class="trip-main">
           <TripNavigation :active-route="currentRoute" @navigate="handleNavigation" />
+          <TripItineraryMainSection />
      </div>
+
+
+
 </template>
 
 <script>
 import TripNavigation from "@/components/trip/TripNavigation.vue";
+import TripItineraryMainSection from "@/components/trip/TripItineraryMainSection.vue";
 
 export default {
-     name: "TripItineraryPage",
+     name: "TripMainPage",
      components: {
           TripNavigation,
+          TripItineraryMainSection
      },
      data() {
           return {
-               currentRoute: "home",
+               currentRoute: "trip-main",
           };
      },
      methods: {
@@ -27,5 +32,10 @@ export default {
 </script>
 
 <style>
-/* Add any additional styling specific to this page */
+.trip-main {
+     display: flex;
+     align-items: center;
+     height: 100%;
+     overflow-y: auto;
+}
 </style>

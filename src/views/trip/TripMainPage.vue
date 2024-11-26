@@ -1,7 +1,7 @@
 <template>
      <div class="trip-main">
           <TripNavigation :active-route="currentRoute" @navigate="handleNavigation" />
-          <TripMainPageMainSection />
+          <TripMainSection />
      </div>
 
 
@@ -10,13 +10,13 @@
 
 <script>
 import TripNavigation from "@/components/trip/TripNavigation.vue";
-import TripMainPageMainSection from "@/components/trip/TripMainPageMainSection.vue";
+import TripMainSection from "@/components/trip/TripMainSection.vue";
 
 export default {
      name: "TripMainPage",
      components: {
           TripNavigation,
-          TripMainPageMainSection
+          TripMainSection
      },
      data() {
           return {
@@ -35,5 +35,7 @@ export default {
 .trip-main{
      display: flex;
      align-items: center;
+     height: 100%;
+     overflow-y: auto;
 }
 </style>
