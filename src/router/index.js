@@ -2,12 +2,18 @@ import LoginPage from '@/views/login/LoginPage.vue'
 import OAuthRedirectPage from '@/views/login/OAuthRedirectPage.vue'
 import SignUpPage from '@/views/login/SignUpPage.vue'
 import MainPage from '@/views/MainPage.vue'
+import AddTripPage from '@/views/trip/AddTripPage.vue'
+import MyTripPage from '@/views/trip/MyTripPage.vue'
+import RecommendedTripPage from '@/views/trip/RecommendedTripPage.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 const routes = [
   { path: '/login', component: LoginPage },
   { path: '/signup', component: SignUpPage },
   { path: '/', component: MainPage, meta: { requiresAuth: true } },
   { path: '/oauth2/redirect', component: OAuthRedirectPage },
+  { path: '/recommended', component: RecommendedTripPage },
+  { path: '/my-trip', component: MyTripPage },
+  { path: '/add-trip', component: AddTripPage },
 ]
 
 const router = createRouter({

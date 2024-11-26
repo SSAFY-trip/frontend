@@ -14,3 +14,7 @@ export const getLikedTrips = async () => {
 export const getUsersWhoLikedTrip = async (tripId) => {
   return await axiosInstance.get(`/user-like-trip/trip/${tripId}`)
 }
+
+export const getMostLikedTrips = async () => {
+  return await axiosInstance.get(`/user-like-trip/most-liked`)
+}

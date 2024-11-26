@@ -21,13 +21,11 @@ export default {
     },
   },
   methods: {
-    methods: {
-      navigateToMain() {
-        this.$router.push('/login')
-      },
-      navigateToUser() {
-        this.$router.push('/login')
-      },
+    navigateToMain() {
+      this.$router.push('/my-trip')
+    },
+    navigateToUser() {
+      this.$router.push('/login')
     },
   },
   computed: {
@@ -39,6 +37,7 @@ export default {
 </script>
 
 <style scoped>
+/* 공통 스타일 */
 .RightNavigationWrapper {
   display: flex;
   align-items: center;
@@ -53,64 +52,109 @@ export default {
   padding: 10px 20px;
   font-size: 16px;
   font-weight: 500;
-  color: white;
-  background-color: black;
-  border: 2px solid black;
   border-radius: 24px;
   cursor: pointer;
-  transition:
-    background-color 0.3s,
-    color 0.3s,
-    border-color 0.3s;
-}
-
-.backgroundContent:hover {
-  background-color: white;
-  color: black;
-  border-color: black;
+  transition: all 0.3s ease;
 }
 
 .arrow-icon {
   width: 16px;
   height: 16px;
-  filter: invert(0);
-  transition: filter 0.3s;
-}
-
-.backgroundContent:hover .arrow-icon {
-  filter: invert(1);
+  transition: filter 0.3s ease;
 }
 
 .circle-icon {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 40px;
-  height: 40px;
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
-  background-color: black;
-  border: 2px solid black;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
 }
 
-.circle-icon:hover {
+.user-icon {
+  width: 20px;
+  height: 20px;
+  transition: filter 0.3s ease;
+}
+
+/* 다크 모드 */
+.dark-mode .backgroundContent {
+  background-color: black;
+  color: white;
+  border: 2px solid black;
+}
+
+.dark-mode .backgroundContent:hover {
   background-color: white;
   color: black;
   border-color: black;
 }
-.user-icon {
-  width: 20px;
-  height: 20px;
-  filter: brightness(0) invert(1);
-  transition: filter 0.3s;
+
+.dark-mode .arrow-icon {
+  filter: invert(0);
 }
 
-.circle-icon:hover .user-icon {
-  filter: brightness(0) invert(0);
+.dark-mode .backgroundContent:hover .arrow-icon {
+  filter: invert(1);
+}
+
+.dark-mode .circle-icon {
+  background-color: black;
+  border: 2px solid black;
+}
+
+.dark-mode .circle-icon:hover {
+  background-color: white;
+  border-color: black;
+}
+
+.dark-mode .user-icon {
+  filter: brightness(0) invert(1);
+}
+
+.dark-mode .circle-icon:hover .user-icon {
+  filter: brightness(0);
+}
+
+/* 라이트 모드 */
+.light-mode .backgroundContent {
+  background-color: white;
+  color: black;
+  border: 2px solid white;
+}
+
+.light-mode .backgroundContent:hover {
+  background-color: blueviolet;
+  color: white;
+  border-color: white;
+}
+
+.light-mode .arrow-icon {
+  filter: brightness(0);
+}
+
+.light-mode .backgroundContent:hover .arrow-icon {
+  filter: brightness(0) invert(1);
+}
+
+.light-mode .circle-icon {
+  background-color: white;
+  border: 2px solid white;
+}
+
+.light-mode .circle-icon:hover {
+  background-color: blueviolet;
+  border-color: white;
 }
 
 .light-mode .user-icon {
   filter: brightness(0);
+}
+
+.light-mode .circle-icon:hover .user-icon {
+  filter: brightness(0) invert(1);
 }
 </style>

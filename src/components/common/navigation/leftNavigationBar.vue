@@ -34,8 +34,8 @@ export default {
   flex-wrap: nowrap;
   border-radius: 24px;
   border: 2px solid black;
-  width: 56%;
-  margin-left: 25px;
+
+  width: 100%;
   transition:
     background-color 0.3s,
     color 0.3s,
@@ -47,6 +47,8 @@ export default {
   background-color: black;
   border-color: black;
   color: white;
+  margin-left: 25px;
+  width: 60%;
 }
 
 .content.light {
@@ -69,20 +71,6 @@ export default {
   color: black;
 }
 
-.content.light:hover {
-  background-color: black;
-  border-color: white;
-  color: white;
-}
-
-.content.light:hover .nav-link {
-  color: white;
-}
-
-.content.light:hover .separator {
-  color: white;
-}
-
 .nav-link {
   background: none;
   border: none;
@@ -96,9 +84,12 @@ export default {
     font-weight 0.3s,
     margin 0.3s;
 }
+
 .nav-link:hover {
   font-weight: 800;
+  color: #5580c9;
 }
+
 .separator {
   font-size: 16px;
   margin: 0 5px;
@@ -107,10 +98,6 @@ export default {
 
 .content.dark .nav-link {
   color: white;
-}
-
-.content.light .nav-link {
-  color: black;
 }
 
 .content.dark .separator {

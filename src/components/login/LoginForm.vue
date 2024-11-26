@@ -38,7 +38,7 @@ export default {
         const accessToken = response.headers['authorization']
         const refreshToken = response.headers['set-cookie']
         this.$store.commit('auth/setTokens', { accessToken, refreshToken })
-        this.$router.push('/main')
+        this.$router.push('/')
       } catch (error) {
         alert('로그인 실패: ' + error.response.data.message)
       }
