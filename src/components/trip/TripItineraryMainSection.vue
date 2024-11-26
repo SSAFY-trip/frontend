@@ -59,15 +59,17 @@
 
                     <div class="map">
                         <p class="section-title">지도</p>
+
                         <TMap v-if="averageLocation.lat !== 0 && averageLocation.lng !== 0" :lat="averageLocation.lat"
                             :lng="averageLocation.lng" :markers="this.dayEvents" :zoom="this.selectedEvent" />
+
                     </div>
                 </div>
                 <hr />
                 <div v-if="!selectedEvent" class="right-section">
                     <div class="header">
                         <p class="section-title">일정</p>
-                        <button class="black-button" @click="openPopup">
+                        <button class="black-plus-button" @click="openPopup">
                             <img src="@/assets/icons/plus.svg" alt="plus" />
                         </button>
                     </div>
@@ -86,37 +88,11 @@
 
                 <!-- Details container -->
                 <div v-if="selectedEvent" class="right-section-details">
-                    <div class="header">
-                        <button @click="deselectEvent" class="back-arrow-button">
-                            <img src="@/assets/icons/angle-arrow-left.svg" />
-                        </button>
-                        <p class="section-title">{{ selectedEvent.name }}</p>
-                    </div>
-                    <div class="detail-content">
-                        <div v-for="(value, key) in nonEmptyFields" :key="key" class="detail-field">
-                            <strong>{{ formatKey(key) }}:</strong>
-                            <div v-if="key === 'imageUrls'" class="image-slider">
-                                <div class="image-slider-wrapper">
-                                    <div class="image-slider-content">
-                                        <div v-for="(url, index) in value" :key="index" class="image-slide">
-                                            <img :src="url" :alt="'이미지 ' + (index + 1)" @error="
-                                                handleImageError($event)
-                                                " />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <span v-else-if="Array.isArray(value)">
-                                <ul>
-                                    <li v-for="(item, index) in value" :key="index">
-                                        {{ item }}
-                                    </li>
-                                </ul>
-                            </span>
-                            <a v-else-if="isUrl(value)" :href="value" target="_blank">{{ value }}</a>
-                            <span v-else>{{ formatValue(value) }}</span>
-                        </div>
-                    </div>
+                    <button @click="deselectEvent" class="back-arrow-button">
+                        <img src="@/assets/icons/angle-arrow-left.svg" />
+                    </button>
+
+                    <EventDetail :event="selectedEvent" />
                 </div>
             </div>
         </div>
@@ -125,7 +101,7 @@
     <div v-if="showPopup">
 
         <div class="overlay">
-            <EventSearch />
+            <EventSearch :date="selectedDate" />
 
             <button class="close-button" @click="closePopup">
                 <img src="@/assets/icons/cross.svg" alt="Close" />
@@ -139,12 +115,14 @@
 import { optimizeRoutes } from "@/utils/eventAPI";
 import TMap from "@/components/trip/TMap.vue";
 import EventSearch from "@/components/trip/EventSearch.vue";
+import EventDetail from "@/components/trip/EventDetail.vue";
 
 export default {
     name: "TripItineraryMainSection",
     components: {
         TMap,
         EventSearch,
+        EventDetail,
     },
     data() {
         return {
@@ -158,7 +136,7 @@ export default {
             filteredDestinations: null,
             selectedEvent: null,
             showPopup: false,
-            popupKey: 0, 
+            popupKey: 0,
         };
     },
     mounted() {
@@ -174,33 +152,6 @@ export default {
                 return this.events[this.selectedDate];
             }
             return [];
-        },
-        nonEmptyFields() {
-            const excludedKeys = ["placeId", "latitude", "longitude", "name"];
-            console.log("selected event details: ");
-            console.log(
-                this.$store.getters.getEventDetails[this.selectedEvent.placeId]
-            );
-            const filteredFields = Object.fromEntries(
-                Object.entries(
-                    this.$store.getters.getEventDetails[
-                    this.selectedEvent.placeId
-                    ]
-                ).filter(
-                    ([key, value]) =>
-                        this.isValid(value) && !excludedKeys.includes(key)
-                )
-            );
-
-            const orderedFields = {};
-
-            if (filteredFields.imageUrls) {
-                orderedFields.imageUrls = filteredFields.imageUrls;
-                delete filteredFields.imageUrls;
-            }
-
-            // Merge the rest of the fields
-            return { ...orderedFields, ...filteredFields };
         },
         averageLocation() {
             if (!this.dayEvents || this.dayEvents.length === 0) {
@@ -263,49 +214,7 @@ export default {
         deselectEvent() {
             this.selectedEvent = null;
         },
-        isValid(value) {
-            return (
-                value !== null &&
-                value !== undefined &&
-                value !== "" &&
-                !(Array.isArray(value) && !value.length)
-            );
-        },
-        formatKey(key) {
-            const labels = {
-                category: "카테고리",
-                address: "주소",
-                roadAddress: "도로명 주소",
-                zipCode: "우편번호",
-                telephone: "전화번호",
-                menus: "메뉴",
-                canParkFlag: "주차 가능 여부",
-                runsTwentyFourSevenFlag: "24시간 운영 여부",
-                runsYearLongFlag: "연중무휴 여부",
-                homepageUrl: "홈페이지 URL",
-                description: "설명",
-                additionalInfo: "추가 정보",
-                imageUrls: "이미지",
-            };
-            return labels[key] || key; // Default to key if no label is found
-        },
-        // Format value (boolean as Yes/No in Korean)
-        formatValue(value) {
-            return typeof value === "boolean"
-                ? value
-                    ? "예"
-                    : "아니요"
-                : value;
-        },
-        isUrl(value) {
-            return typeof value === "string" && value.startsWith("http");
-        },
-        handleImageError(event) {
-            // Get the parent of the image element (which is the div)
-            const parentDiv = event.target.parentNode;
-            // Remove the parent div if the image fails to load
-            parentDiv.parentNode.removeChild(parentDiv);
-        },
+
         async optimizeRoute() {
             if (this.departure && this.destination) {
                 // Log the selected departure and destination ids for debugging
@@ -438,6 +347,13 @@ export default {
 
 }
 
+.back-arrow-button {
+    border: none;
+    background: transparent;
+    /* margin-right: 5px; */
+    margin-top: 6px;
+}
+
 /* top bar */
 .top-bar {
     display: flex;
@@ -487,6 +403,7 @@ export default {
     width: 100%;
     height: 100%;
     margin-top: 30px;
+    /* margin-bottom: 100px; */
 
     display: flex;
     gap: 30px;
@@ -494,14 +411,14 @@ export default {
 
 hr {
     border-top: 1px solid #d9d9d9;
-    height: 100%;
+    height: 95%;
 }
 
 .section-title {
     font-weight: bold;
-    font-size: 20px;
+    font-size: 22px;
     padding-left: 10px;
-    /* margin-bottom: 5px; */
+    margin-bottom: 10px;
 }
 
 .header {
@@ -512,12 +429,26 @@ hr {
 
 .black-button {
     background-color: black;
-    padding: 5px 15px;
+    padding: 6px 15px;
     border-radius: 30px;
     align-items: center;
     color: white;
     border: none;
     justify-content: center;
+    height: fit-content;
+
+    display: flex;
+}
+
+.black-plus-button {
+    background-color: black;
+    padding: 6px 6px;
+    border-radius: 30px;
+    align-items: center;
+    color: white;
+    border: none;
+    justify-content: center;
+    height: fit-content;
 
     display: flex;
 }
@@ -528,6 +459,8 @@ hr {
     width: 100%;
     display: flex;
     flex-direction: column;
+    margin-right: 10px;
+    gap: 30px;
 }
 
 .optimize-route {
@@ -540,7 +473,7 @@ hr {
 
 .map {
     width: 100%;
-    height: 100%;
+    height: 90%;
     display: flex;
     flex-direction: column;
     padding-bottom: 30px;
@@ -579,6 +512,15 @@ hr {
     align-items: center;
 }
 
+.right-section-details {
+    display: flex;
+    align-items: flex-start;
+}
+
+.detail-header {
+    display: flex;
+}
+
 .event-top .event-name {
     font-weight: bold;
 }
@@ -587,6 +529,7 @@ hr {
     font-weight: bold;
     padding-right: 5px;
 }
+
 
 .event-top .교통 {
     color: #0c2a6d;
@@ -604,64 +547,28 @@ hr {
     color: #517edc;
 }
 
-/* right section details */
-.right-section-details {
-    height: 100%;
-    max-width: 50%;
+.form {
     display: flex;
-    flex-direction: column;
-}
-
-.right-section-details .header {
-    display: flex;
+    justify-content: space-between;
+    border: 1px solid black;
+    border-radius: 30px;
     width: 100%;
-    align-content: center;
+    padding: 10px 30px;
 }
 
-.right-section-details .back-arrow-button {
+.form .input-field {
+    width: 40%;
+    display: flex;
+    justify-content: center;
+}
+
+.input-field label {
+    color: grey;
+}
+
+.form .input-field select {
+    width: 60%;
     border: none;
-    background: transparent;
-}
 
-.right-section-details .detail-content {
-    width: 100%;
-}
-
-.image-slider {
-    width: 100%;
-    /* Full width of the parent container */
-    overflow-x: auto;
-    /* Enables horizontal scrolling */
-    display: flex;
-    /* Makes the container a flexbox */
-    gap: 10px;
-    /* Space between images */
-}
-
-.image-slider-wrapper {
-    display: flex;
-    overflow-x: auto;
-    /* Enables horizontal scroll */
-}
-
-.image-slider-content {
-    display: flex;
-    height: 200px;
-}
-
-.image-slide {
-    flex-shrink: 0;
-    /* Prevent images from shrinking */
-    width: 300px;
-    /* Fixed width for each image */
-    height: auto;
-}
-
-.image-slide img {
-    width: 100%;
-    /* Image takes the full width of the container */
-    height: 100%;
-    object-fit: cover;
-    /* Ensures the images cover the area */
 }
 </style>

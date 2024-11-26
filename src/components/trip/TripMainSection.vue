@@ -16,7 +16,7 @@
                          <p class="date">{{ formatDay(index) }} - {{ formatDate(date) }}</p>
                          <ul v-if="events.length > 0">
                               <li v-for="(eventInfo, index) in events" :key="index" class="event">
-                                   <span>{{ eventInfo.name }}</span>hhjh
+                                   <span>{{ eventInfo.name }}</span>
                                    <p>{{ eventInfo.memo }}</p>
                               </li>
                          </ul>
