@@ -10,6 +10,11 @@ export const getAllInfoOfTripAndEvents = async (tripId) => {
     return await axiosInstance.get(`/trips/${tripId}/events/all`);
 };
 
+// get all trip data
+export const getVisitTripInfo = async (tripId) => {
+    return await axiosInstance.get(`/trips/${tripId}/visit`);
+};
+
 // optimize routes
 export const optimizeRoutes = async (
     tripId,

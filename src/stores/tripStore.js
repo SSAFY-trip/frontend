@@ -1,18 +1,14 @@
 // store.js
-import { getAllInfoOfTripAndEvents } from '@/utils/eventAPI'
-import { createStore } from 'vuex'
+import { getAllInfoOfTripAndEvents, getVisitTripInfo } from "@/utils/eventAPI";
+import { createStore } from "vuex";
 
 const tripStore = createStore({
-  state() {
-    return {
-      tripInfo: null,
-      events: null,
-      eventDetails: null,
-    }
-  },
-  mutations: {
-    setTripinfo(state, tripInfo) {
-      state.tripInfo = tripInfo
+    state() {
+        return {
+            tripInfo: null,
+            events: null,
+            eventDetails: null,
+        };
     },
     mutations: {
         setTripinfo(state, tripInfo) {
@@ -33,11 +29,12 @@ const tripStore = createStore({
 
             state.events[date] = orderedEvents;
         },
-        addEvent(state, {date, newEvent, newEventDetails}) {
+        addEvent(state, { date, newEvent, newEventDetails }) {
             console.log(newEvent);
             console.log(newEventDetails);
             state.eventDetails[newEventDetails.placeId] = newEventDetails;
-            state.events[date].push(newEvent);
+            if (state.events[date]) state.events[date].push(newEvent);
+            else state.events[date] = [newEvent];
         },
     },
     actions: {
@@ -59,62 +56,60 @@ const tripStore = createStore({
                 console.error("Error fetching trip data:", error);
             }
         },
+        async fetchVisitTripData({ commit }, tripId){
+            try {
+                // Make the API call with the passed tripId
+                const response = await getVisitTripInfo(tripId);
+
+                console.log("response success:");
+                console.log(response);
+                // Assuming the API returns an object with startDate, endDate, and events
+                const { tripInfo, events, eventDetails } = response.data;
+
+                // Commit mutations to update the state with the fetched data
+                commit("setTripinfo", tripInfo);
+                commit("setEvents", events);
+                commit("setEventDetails", eventDetails);
+            } catch (error) {
+                console.error("Error fetching trip data:", error);
+            }
+        }
     },
     reorderEventsOfDate(state, payload) {
-      const { date, newOrderOfEventIds } = payload
+        const { date, newOrderOfEventIds } = payload;
 
-      const orderedEvents = newOrderOfEventIds.map((id) => {
-        return state.events[date].find((event) => event.id === id)
-      })
+        const orderedEvents = newOrderOfEventIds.map((id) => {
+            return state.events[date].find((event) => event.id === id);
+        });
 
-      state.events[date] = orderedEvents
+        state.events[date] = orderedEvents;
     },
-  },
-  actions: {
-    async fetchTripData({ commit }, tripId) {
-      try {
-        // Make the API call with the passed tripId
-        const response = await getAllInfoOfTripAndEvents(tripId)
+    getters: {
+        getTripDatesList(state) {
+            const start = new Date(state.tripInfo.startDate);
+            const end = new Date(state.tripInfo.endDate);
+            const dates = [];
 
-        console.log('response success: ' + response)
-        // Assuming the API returns an object with startDate, endDate, and events
-        const { tripInfo, events, eventDetails } = response.data
+            while (start <= end) {
+                const dateStr = start.toISOString().split("T")[0]; // Format as yyyy-mm-dd
+                dates.push(dateStr);
+                start.setDate(start.getDate() + 1);
+            }
 
-        // Commit mutations to update the state with the fetched data
-        commit('setTripinfo', tripInfo)
-        commit('setEvents', events)
-        commit('setEventDetails', eventDetails)
-      } catch (error) {
-        console.error('Error fetching trip data:', error)
-      }
+            return dates;
+        },
+        getTripInfo(state) {
+            console.log(state);
+            console.log(state.tripInfo, "qqq");
+            return state.tripInfo;
+        },
+        getEvents(state) {
+            return state.events;
+        },
+        getEventDetails(state) {
+            return state.eventDetails;
+        },
     },
-  },
-  getters: {
-    getTripDatesList(state) {
-      const start = new Date(state.tripInfo.startDate)
-      const end = new Date(state.tripInfo.endDate)
-      const dates = []
+});
 
-      while (start <= end) {
-        const dateStr = start.toISOString().split('T')[0] // Format as yyyy-mm-dd
-        dates.push(dateStr)
-        start.setDate(start.getDate() + 1)
-      }
-
-      return dates
-    },
-    getTripInfo(state) {
-      console.log(state)
-      console.log(state.tripInfo, 'qqq')
-      return state.tripInfo
-    },
-    getEvents(state) {
-      return state.events
-    },
-    getEventDetails(state) {
-      return state.eventDetails
-    },
-  },
-})
-
-export default tripStore
+export default tripStore;

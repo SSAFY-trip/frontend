@@ -1,14 +1,13 @@
 <template>
   <nav class="vertical-nav">
-    <h3>Trippy</h3>
+    <router-link :to="{ name: 'main' }" class="homeIcon">
+      <h3>Trippy</h3>
+    </router-link>
+
     <hr />
     <ul>
       <li v-for="item in navItems" :key="item.route" :title="item.text" class="nav-item">
-        <router-link
-          :to="{ name: item.route }"
-          active-class="active-link"
-          exact-active-class="exact-active-link"
-        >
+        <router-link :to="{ name: item.route }" active-class="active-link" exact-active-class="exact-active-link">
           <div v-html="item.icon" class="nav-icon"></div>
         </router-link>
       </li>
@@ -31,7 +30,6 @@ export default {
         { icon: tripMainIcon, route: 'trip-main', text: '여행 요약' },
         { icon: tripItineraryIcon, route: 'trip-itinerary', text: '여행 일정' },
         { icon: tripSettingsIcon, route: 'trip-settings', text: '여행 정보 및 설정' },
-        { icon: tripNavigationIcon, route: 'trip-navigation', text: '내베게이션' },
       ],
     }
   },
@@ -65,6 +63,7 @@ export default {
   border: none;
   border-top: 1px solid #434343;
 }
+
 .vertical-nav ul {
   list-style-type: none;
   margin-top: 10px;
@@ -103,6 +102,8 @@ export default {
     background-color 0.3s ease,
     fill 0.3s ease;
   /* Transition for smooth effect */
+
+  z-index: 5;
 }
 
 .vertical-nav li .router-link-active .nav-icon svg {
@@ -135,6 +136,7 @@ export default {
   border-radius: 100px;
   white-space: nowrap;
   font-size: 14px;
+  z-index: 5;
 }
 
 .nav-item:hover::before {
@@ -145,5 +147,10 @@ export default {
   border-width: 5px;
   border-style: solid;
   border-color: transparent transparent transparent rgba(0, 0, 0, 0.75);
+}
+
+.homeIcon {
+  text-decoration: none;
+  color: inherit;
 }
 </style>

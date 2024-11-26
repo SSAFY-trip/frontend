@@ -4,7 +4,6 @@
                <div class="title">
                     <h1>{{ tripInfo.name }}</h1>
                     <h5>{{ formatTripDateRange(tripInfo.startDate, tripInfo.endDate) }}</h5>
-                    <h5>경주 | 대구</h5>
                </div>
 
                <div class="image-shape-container" :style="{ backgroundImage: `url(${tripInfo.imgUrl})` }" />
@@ -29,13 +28,8 @@
 </template>
 
 <script>
-import tripMainImgShape from '@/assets/shapes/trip-main-img.svg';
-import tripMainImage from '@/assets/images/test.jpg';
-import { getTripEventsByDate } from '@/utils/eventAPI';
-
-
 export default {
-     name: "TripMainSection",
+     name: "VisitTripMainSection",
      data() {
           return {
                loading: true, // Flag to track loading state
@@ -65,8 +59,10 @@ export default {
                // Access tripId from the URL
                const tripId = this.$route.params.tripId;
 
+               console.log("Trip id" + tripId)
+
                // Dispatch the action with tripId
-               await this.$store.dispatch('fetchTripData', tripId) // Ensure data is fetched
+               await this.$store.dispatch('fetchVisitTripData', tripId) // Ensure data is fetched
                     .then(() => {
                          console.log("tripInfo: " + this.$store.getters.getTripInfo);
                     });

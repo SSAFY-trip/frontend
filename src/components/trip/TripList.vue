@@ -1,7 +1,7 @@
 <template>
   <div class="trip-container">
     <div class="trip-list">
-      <div class="trip-card" v-for="trip in trips" :key="trip.id">
+      <div class="trip-card" v-for="trip in trips" :key="trip.id" @click="goToTrip(trip.id)">
         <div class="trip-header">
           <div class="trip-name">{{ trip.name }}</div>
           <img v-if="trip.imgUrl" :src="trip.imgUrl" alt="Trip Image" class="trip-image" />
@@ -46,6 +46,10 @@ export default {
       const nights = days - 1 // 숙박일수 계산
       return `${nights}박 ${days}일`
     },
+    goToTrip(tripId) {
+      // Navigate to the trip's page.
+      this.$router.push(`/visit/trip/${tripId}/main`);
+    },
   },
 }
 </script>
@@ -56,8 +60,10 @@ export default {
   white-space: nowrap;
   padding: 16px;
   height: 100%;
-  scroll-behavior: smooth; /* 부드러운 스크롤 */
+  scroll-behavior: smooth;
+  /* 부드러운 스크롤 */
 }
+
 .trip-container::-webkit-scrollbar {
   height: 4px;
 }
@@ -110,6 +116,7 @@ export default {
     4px 4px 8px rgba(0, 0, 0, 0.2),
     -4px -4px 8px rgba(255, 255, 255, 0.8);
 }
+
 .trip-image {
   width: 100%;
   height: 171px;
@@ -153,14 +160,19 @@ export default {
   text-overflow: ellipsis;
 
   /* 2줄 제한 및 왼쪽 정렬 */
-  -webkit-line-clamp: 2; /* 최대 2줄로 제한 */
+  -webkit-line-clamp: 2;
+  /* 최대 2줄로 제한 */
   -webkit-box-orient: vertical;
-  white-space: normal; /* 줄바꿈 허용 */
-  text-align: left; /* 텍스트 왼쪽 정렬 */
+  white-space: normal;
+  /* 줄바꿈 허용 */
+  text-align: left;
+  /* 텍스트 왼쪽 정렬 */
 
   /* 줄 높이와 높이 제한 */
-  line-height: 1.5em; /* 줄 높이 */
-  max-height: calc(1.5em * 2); /* 최대 2줄 높이 */
+  line-height: 1.5em;
+  /* 줄 높이 */
+  max-height: calc(1.5em * 2);
+  /* 최대 2줄 높이 */
 }
 
 .trip-duration {
@@ -169,6 +181,7 @@ export default {
   line-height: 23.76px;
   color: black;
 }
+
 .trip-meta {
   display: flex;
   justify-content: space-between;

@@ -544,7 +544,7 @@ hr {
 }
 
 .event-top .숙박 {
-    color: #517edc;
+    color: #404040;
 }
 
 .form {
@@ -560,6 +560,7 @@ hr {
     width: 40%;
     display: flex;
     justify-content: center;
+    gap: 30px
 }
 
 .input-field label {
@@ -567,7 +568,7 @@ hr {
 }
 
 .form .input-field select {
-    width: 60%;
+    width: 30%;
     border: none;
 
 }

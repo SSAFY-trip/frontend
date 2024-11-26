@@ -172,7 +172,7 @@ export default {
 .place-detail-section {
      position: absolute;
      top: 6%;
-     left: 26.2%;
+     left: 27%;
      background-color: white;
      width: 25%;
      max-height: 88%;
