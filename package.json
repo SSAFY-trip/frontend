@@ -14,8 +14,10 @@
     "axios": "^1.7.7",
     "jwt-decode": "^4.0.0",
     "pinia": "^2.2.6",
+    "swiper": "^11.1.15",
     "vue": "^3.5.12",
-    "vue-router": "^4.4.5"
+    "vue-router": "^4.4.5",
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.14.0",
