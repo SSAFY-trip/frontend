@@ -24,10 +24,16 @@ const tripStore = createStore({
             const { date, newOrderOfEventIds } = payload;
 
             const orderedEvents = newOrderOfEventIds.map((id) => {
-                return state.events[date].find((event) => event.id === id); 
+                return state.events[date].find((event) => event.id === id);
             });
 
             state.events[date] = orderedEvents;
+        },
+        addEvent(state, {date, newEvent, newEventDetails}) {
+            console.log(newEvent);
+            console.log(newEventDetails);
+            state.eventDetails[newEventDetails.placeId] = newEventDetails;
+            state.events[date].push(newEvent);
         },
     },
     actions: {
@@ -36,7 +42,8 @@ const tripStore = createStore({
                 // Make the API call with the passed tripId
                 const response = await getAllInfoOfTripAndEvents(tripId);
 
-                console.log("response success: " + response);
+                console.log("response success:");
+                console.log(response);
                 // Assuming the API returns an object with startDate, endDate, and events
                 const { tripInfo, events, eventDetails } = response.data;
 
