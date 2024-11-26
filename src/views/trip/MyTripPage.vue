@@ -54,52 +54,29 @@
       <div class="duration-filters">
         <button
           class="duration-filter"
-          :class="{ active: selectedFilter === '전체' }"
-          @click="filterTrips('전체')"
+          :class="{ active: selectedFilter === '내가 참가한 여행' }"
+          @click="filterTrips('내가 참가한 여행')"
         >
-          전체
+          내가 참가한 여행
         </button>
         <button
           class="duration-filter"
-          :class="{ active: selectedFilter === '당일치기' }"
-          @click="filterTrips('당일치기')"
+          :class="{ active: selectedFilter === '좋아요 한 여행' }"
+          @click="filterTrips('좋아요 한 여행')"
         >
-          당일치기
-        </button>
-        <button
-          class="duration-filter"
-          :class="{ active: selectedFilter === '1박 2일' }"
-          @click="filterTrips('1박 2일')"
-        >
-          1박 2일
-        </button>
-        <button
-          class="duration-filter"
-          :class="{ active: selectedFilter === '2박 3일' }"
-          @click="filterTrips('2박 3일')"
-        >
-          2박 3일
-        </button>
-        <button
-          class="duration-filter"
-          :class="{ active: selectedFilter === '3박 4일' }"
-          @click="filterTrips('3박 4일')"
-        >
-          3박 4일
-        </button>
-        <button
-          class="duration-filter"
-          :class="{ active: selectedFilter === '그 이상' }"
-          @click="filterTrips('그 이상')"
-        >
-          그 이상
+          좋아요 한 여행
         </button>
       </div>
     </section>
 
     <!-- 여행 목록 섹션 -->
     <div class="trip-list">
-      <div class="trip-card" v-for="trip in filteredTrips" :key="trip.id">
+      <div
+        class="trip-card"
+        v-for="trip in filteredTrips"
+        :key="trip.id"
+        @click="navigateToTrip(trip.id)"
+      >
         <div class="trip-header">
           <div class="trip-name">{{ trip.name }}</div>
           <img v-if="trip.imgUrl" :src="trip.imgUrl" alt="Trip Image" class="trip-image" />
@@ -120,7 +97,6 @@
 </template>
 
 <script>
-import { getMostLikedTrips } from '@/utils/userLikeTripAPI'
 import axiosInstance from '@/utils/axios'
 export default {
   name: 'RecommendTrips',
@@ -133,9 +109,15 @@ export default {
       selectedGugun: '', // 선택된 구 · 군
       trips: [], // 추천 여행 데이터
       filteredTrips: [], // 필터링된 여행 목록
+      myTrips: [], // 내가 참가한 여행 데이터
+      likedTrips: [], // 좋아요 한 여행 데이터
+      selectedFilter: '내가 참가한 여행',
     }
   },
   methods: {
+    navigateToTrip(tripId) {
+      this.$router.push(`/trip/${tripId}/main`)
+    },
     navigateTo(route) {
       this.$router.push(route)
     },
@@ -164,32 +146,43 @@ export default {
       const nights = days - 1
       return `${nights}박 ${days}일`
     },
+    async fetchTrips() {
+      try {
+        // "내가 참가한 여행" 데이터 가져오기
+        const myTripsResponse = await axiosInstance.get('/trip-member/trips')
+        this.myTrips = myTripsResponse.data
+        console.log(this.myTrips, 'myTrips')
+        // "좋아요 한 여행" 데이터 가져오기
+        const likedTripsResponse = await axiosInstance.get('/user-like-trip/user')
+        this.likedTrips = likedTripsResponse.data
+        console.log(this.likedTrips, 'likedTrips')
+        // 기본 필터 데이터 설정
+        this.trips = [...this.myTrips]
+
+        this.filterTrips('내가 참가한 여행') // 기본값 설정
+      } catch (error) {
+        console.error('여행 데이터를 가져오는 데 실패했습니다:', error)
+      }
+    },
     filterTrips(filter) {
       this.selectedFilter = filter // 선택된 필터 업데이트
-      if (filter === '전체') {
-        this.filteredTrips = [...this.trips]
-      } else if (filter === '그 이상') {
-        this.filteredTrips = this.trips.filter((trip) => {
-          const duration = this.formatTripDuration(trip.startDate, trip.endDate)
-          const [nights] = duration.split('박')
-          return parseInt(nights, 10) >= 4
-        })
-      } else {
-        this.filteredTrips = this.trips.filter((trip) => {
-          return this.formatTripDuration(trip.startDate, trip.endDate) === filter
-        })
+      if (filter === '내가 참가한 여행') {
+        this.trips = [...this.myTrips]
+      } else if (filter === '좋아요 한 여행') {
+        this.trips = [...this.likedTrips]
       }
+      this.filteredTrips = [...this.trips] // 화면에 반영되도록 filteredTrips 업데이트
     },
   },
   async mounted() {
     try {
-      const response = await getMostLikedTrips()
-      this.trips = response.data
+      await this.fetchTrips()
 
       const response2 = await axiosInstance.get('/locations/sidos/guguns')
       this.sidos = response2.data
       this.filterTrips('전체')
       console.log(response2)
+      this.filterTrips('내가 참가한 여행') // 기본값 설정
     } catch (error) {
       console.error('추천 여행 데이터를 불러오는 데 실패했습니다.', error)
     }
@@ -480,10 +473,11 @@ export default {
 
 .trip-card {
   display: flex;
+  cursor: pointer;
   flex-direction: column;
   padding: 20px;
   justify-content: space-between;
-  min-width: 300px;
+  width: 320px;
   border-radius: 16px;
   background: #ffffff;
   box-shadow:
@@ -504,8 +498,11 @@ export default {
 
 .trip-image {
   width: 100%;
-  height: 200px;
+  height: 171px;
+  color: #999;
   object-fit: cover;
+  border-radius: 16px;
+  margin-top: 16px;
 }
 
 .placeholder-image {
@@ -519,7 +516,9 @@ export default {
 }
 
 .trip-details {
-  padding: 16px;
+  padding-bottom: 4px;
+  padding-right: 4px;
+  padding-left: 4px;
 }
 
 .trip-name {

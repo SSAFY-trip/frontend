@@ -165,6 +165,7 @@ export default {
       return `${nights}박 ${days}일`
     },
     filterTrips(filter) {
+      console.log('hello', this.trips)
       this.selectedFilter = filter // 선택된 필터 업데이트
       if (filter === '전체') {
         this.filteredTrips = [...this.trips]
@@ -484,6 +485,7 @@ export default {
   padding: 20px;
   justify-content: space-between;
   min-width: 300px;
+  width: 320px;
   border-radius: 16px;
   background: #ffffff;
   box-shadow:
@@ -504,8 +506,11 @@ export default {
 
 .trip-image {
   width: 100%;
-  height: 200px;
+  height: 171px;
+  color: #999;
   object-fit: cover;
+  border-radius: 16px;
+  margin-top: 16px;
 }
 
 .placeholder-image {
@@ -519,7 +524,9 @@ export default {
 }
 
 .trip-details {
-  padding: 16px;
+  padding-bottom: 4px;
+  padding-right: 4px;
+  padding-left: 4px;
 }
 
 .trip-name {
@@ -533,6 +540,21 @@ export default {
   margin: 4px 0;
   font-size: 14px;
   color: #666;
+
+  /* 멀티라인 줄임표 처리 */
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  /* 2줄 제한 및 왼쪽 정렬 */
+  -webkit-line-clamp: 2; /* 최대 2줄로 제한 */
+  -webkit-box-orient: vertical;
+  white-space: normal; /* 줄바꿈 허용 */
+  text-align: left; /* 텍스트 왼쪽 정렬 */
+
+  /* 줄 높이와 높이 제한 */
+  line-height: 1.5em; /* 줄 높이 */
+  max-height: calc(1.5em * 2); /* 최대 2줄 높이 */
 }
 
 .trip-duration {

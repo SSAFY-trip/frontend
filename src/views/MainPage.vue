@@ -110,6 +110,7 @@ export default {
   overflow: hidden;
   position: relative;
   cursor: pointer;
+  border-radius: 15px;
 }
 
 .overlay-image {
@@ -142,6 +143,10 @@ export default {
 
 .first-section {
   height: 100vh;
+  margin-left: 15px;
+  margin-right: 15px;
+  transform: translateY(10px);
+  border-radius: 15px;
 }
 
 .second-section {

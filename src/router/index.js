@@ -1,28 +1,28 @@
 import LoginPage from '@/views/login/LoginPage.vue'
+import OAuthRedirectPage from '@/views/login/OAuthRedirectPage.vue'
+import SignUpPage from '@/views/login/SignUpPage.vue'
 import MainPage from '@/views/MainPage.vue'
 import AddTripPage from '@/views/trip/AddTripPage.vue'
 import MyTripPage from '@/views/trip/MyTripPage.vue'
 import RecommendedTripPage from '@/views/trip/RecommendedTripPage.vue'
-import SignUpPage from '@/views/login/SignUpPage.vue'
-import TripMainPage from '@/views/trip/TripMainPage.vue'
-import { createRouter, createWebHistory } from 'vue-router'
-import OAuthRedirectPage from '@/views/login/OAuthRedirectPage.vue'
 import TripItineraryPage from '@/views/trip/TripItineraryPage.vue'
+import TripMainPage from '@/views/trip/TripMainPage.vue'
 import TripNavigationPage from '@/views/trip/TripNavigationPage.vue'
 import TripSettingsPage from '@/views/trip/TripSettingsPage.vue'
+import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
+  { path: '/', component: MainPage, meta: { requiresAuth: true } },
   { path: '/login', component: LoginPage },
   { path: '/signup', component: SignUpPage },
-  { path: '/', component: MainPage, meta: { requiresAuth: true } },
   { path: '/oauth2/redirect', component: OAuthRedirectPage },
   { path: '/recommended', component: RecommendedTripPage },
   { path: '/my-trip', component: MyTripPage },
   { path: '/add-trip', component: AddTripPage },
-  { path: '/trip/:tripId/main', name: 'trip-main', component: TripMainPage},
-  { path: '/trip/:tripId/itinerary', name: 'trip-itinerary', component: TripItineraryPage},
-  { path: '/trip/:tripId/navigation', name: 'trip-navigation', component: TripNavigationPage},
-  { path: '/trip/:tripId/settings', name: 'trip-settings', component: TripSettingsPage},
+  { path: '/trip/:tripId/main', name: 'trip-main', component: TripMainPage },
+  { path: '/trip/:tripId/itinerary', name: 'trip-itinerary', component: TripItineraryPage },
+  { path: '/trip/:tripId/navigation', name: 'trip-navigation', component: TripNavigationPage },
+  { path: '/trip/:tripId/settings', name: 'trip-settings', component: TripSettingsPage },
 ]
 
 const router = createRouter({

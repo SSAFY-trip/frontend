@@ -212,7 +212,9 @@ export default {
   display: flex;
   flex-direction: column;
   font-family: 'Arial', sans-serif;
-  margin: 20px;
+  margin-left: 15px;
+  margin-right: 15px;
+  transform: translateY(10px);
 }
 input[type='date'] {
   padding: 10px 5px;
