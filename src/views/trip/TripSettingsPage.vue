@@ -84,7 +84,6 @@
                   </button>
                 </div>
               </div>
-
               <div class="form-group">
                 <label>여행 장소</label>
                 <div class="location-selectors">
@@ -109,6 +108,14 @@
             </div>
           </div>
         </div>
+        <div class="users-list-container">
+          <h3>참여 중인 사용자</h3>
+          <div class="users-grid">
+            <div v-for="user in users" :key="user.id" class="trip-card">
+              <p class="user-name">{{ user.name }}</p>
+            </div>
+          </div>
+        </div>
         <button type="submit" class="upload-button" @click="updateTrip">
           여행 수정하기<img
             src="/public/navigation/arrow.svg"
@@ -124,7 +131,7 @@
 <script>
 import axiosInstance from '@/utils/axios'
 import TripNavigation from '@/components/trip/TripNavigation.vue'
-
+import { getUsersWhoLikedTrip } from '@/utils/userLikeTripAPI'
 export default {
   name: 'TripSettingsPage',
   components: {
@@ -146,6 +153,7 @@ export default {
       selectedSido: '',
       selectedGugun: '',
       gugunNo: '',
+      users: [],
     }
   },
   async mounted() {
@@ -153,8 +161,15 @@ export default {
     await this.fetchLocations()
     await this.fetchTripDetails()
     await this.fetchGuguns()
+    await this.getUsersWhoLikedTrip()
   },
   methods: {
+    async getUsersWhoLikedTrip() {
+      const response = await getUsersWhoLikedTrip(this.tripId)
+      console.log(response, '11')
+      this.users = response.data
+    },
+
     async fetchTripDetails() {
       try {
         const response = await axiosInstance.get(`/trips/${this.tripId}`)
@@ -216,23 +231,22 @@ export default {
         if (this.selectedFile) {
           formData.append('image', this.selectedFile)
         }
-        console.log('name', this.tripName)
-        console.log('startDate', this.startDate)
-        console.log('endDate', this.endDate)
-        console.log('tripOverview', this.tripOverview)
-        console.log('isPublic', this.isPublic)
-        console.log('no', this.gugunNo)
-        console.log('previewImage', this.previewImage)
-        console.log('image', this.selectedFile)
-        //    await axiosInstance.patch(`/trips/${this.tripId}`, formData, {
-        //      headers: {
-        //        'Content-Type': 'multipart/form-data',
-        //      },
-        //    })
+        // console.log('name', this.tripName)
+        // console.log('startDate', this.startDate)
+        // console.log('endDate', this.endDate)
+        // console.log('tripOverview', this.tripOverview)
+        // console.log('isPublic', this.isPublic)
+        // console.log('no', this.gugunNo)
+        // console.log('previewImage', this.previewImage)
+        // console.log('image', this.selectedFile)
+        await axiosInstance.patch(`/trips/${this.tripId}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
         alert('여행 수정 완료!')
       } catch (error) {
         console.error('Error updating trip:', error)
-        alert('여행 수정에 실패했습니다.')
       }
     },
     triggerFileInput() {
@@ -297,9 +311,6 @@ export default {
   min-width: 300px;
   border-radius: 16px;
   background: #ffffff;
-  /* box-shadow:
-    4px 4px 8px rgba(60, 36, 36, 0.1),
-    -4px -4px 8px rgba(255, 255, 255, 0.8); */
   transition:
     box-shadow 0.3s ease,
     transform 0.3s ease;
@@ -403,7 +414,8 @@ label {
   align-items: center;
   gap: 10px;
   width: 20%;
-  margin-bottom: 50px;
+  margin-bottom: 20px;
+  margin-top: 20px;
   padding: 12px 20px;
   font-size: 16px;
   font-weight: 500;
@@ -444,7 +456,7 @@ label {
   align-items: center;
   gap: 10px;
   width: 20%;
-  margin-bottom: 50px;
+
   padding: 12px 20px;
   font-size: 16px;
   font-weight: 500;
@@ -553,5 +565,48 @@ input[type='date']:focus {
   width: 100%;
   height: 100%;
   object-fit: cover; /* 이미지를 적절히 맞춤 */
+}
+.users-list-container h3 {
+  text-align: center;
+
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+.users-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.trip-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 15px;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow:
+    4px 4px 8px rgba(0, 0, 0, 0.1),
+    -4px -4px 8px rgba(255, 255, 255, 0.8);
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
+}
+
+/* 호버 효과 */
+.trip-card:hover {
+  transform: translateY(-6px);
+  box-shadow:
+    4px 4px 8px rgba(0, 0, 0, 0.2),
+    -4px -4px 8px rgba(255, 255, 255, 0.8);
+}
+
+.user-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
 }
 </style>

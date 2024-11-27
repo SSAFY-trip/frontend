@@ -21,7 +21,7 @@
             </div>
           </div>
         </div>
-        <h1 class="recommend-title">추천 여행</h1>
+        <h1 class="recommend-title">내 여행</h1>
 
         <div class="location-selectors">
           <div class="location-inner">
@@ -179,6 +179,7 @@ export default {
       await this.fetchTrips()
 
       const response2 = await axiosInstance.get('/locations/sidos/guguns')
+
       this.sidos = response2.data
       this.filterTrips('전체')
       console.log(response2)

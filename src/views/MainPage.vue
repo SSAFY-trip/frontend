@@ -1,21 +1,19 @@
 <template>
+  <div class="header">
+    <div class="background-top">
+      <LeftNavigationBar theme="light" />
+    </div>
+    <div class="temp">
+      <router-link to="/" class="logo" :class="{ 'logo-active': isScrolled }"> Trippy </router-link>
+    </div>
+    <div class="temp">
+      <RightNavigationBar mode="light" />
+    </div>
+  </div>
   <!-- first-section -->
   <div class="first-section">
     <div class="background-container" @click="scrollToSecondSection">
       <img src="/title.svg" alt="Overlay" class="overlay-image" />
-      <div class="header">
-        <div class="background-top">
-          <LeftNavigationBar theme="light" />
-        </div>
-        <div class="temp">
-          <router-link to="/" class="logo" :class="{ 'logo-active': isScrolled }">
-            Trippy
-          </router-link>
-        </div>
-        <div class="temp">
-          <RightNavigationBar mode="light" />
-        </div>
-      </div>
     </div>
   </div>
 
@@ -127,8 +125,9 @@ export default {
   align-items: center;
   justify-content: space-between;
   position: fixed;
-  width: 97%;
+  width: 96%;
   z-index: 10;
+  margin: 31px;
 }
 
 .logo {
